@@ -1,22 +1,40 @@
 import React from 'react';
 import { loadImages } from '../utils/LoadImage';
+import ImageContainer from './ImageContainer';
 
-const SPRITEPATH = '../../../scratch';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(() => {
+  return {
+    header: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      justifyContent: 'center',
+    },
+  };
+});
 
 const Header = (): JSX.Element => {
-  // console.log('test');
-  const img1path = `${SPRITEPATH}/Runner1.png`;
-  const img2path = `${SPRITEPATH}/Runner2.png`;
-  const [imgElems, loaded] = loadImages([img1path, img2path]);
+  const [customHeaderReady, setCustomHeaderReady] = React.useState(false);
+
+  const classes = useStyles();
+
   return (
     <div>
-      <h1>Hollow Grotto</h1>
-      {loaded ? (
-        imgElems.map((elem, i) => {
-          return <div key={i}>{elem}</div>;
-        })
+      {true ? (
+        <div className={classes.header}>
+          <div>
+            <ImageContainer src={`Runner1.png`} width={16} height={16} />
+          </div>
+
+          <h1>Hollow Grotto</h1>
+          <div>
+            <ImageContainer src={'Runner2.png'} width={16} height={16} />
+          </div>
+        </div>
       ) : (
-        <div>Where the image should go</div>
+        <img src={'logo.png'} alt={'logo'} />
       )}
     </div>
   );
