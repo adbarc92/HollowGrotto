@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { render } from 'react-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export interface ImageContainerProps {
   src: string;
@@ -29,11 +29,7 @@ const ImageContainer = (props: ImageContainerProps): JSX.Element => {
     return <div>There was an error loading an image</div>;
   }
 
-  return !loaded ? (
-    <div>Image Loading...</div>
-  ) : (
-    <img src={src} alt={'Jebaited'} />
-  );
+  return !loaded ? <CircularProgress /> : <img src={src} alt={'Jebaited'} />;
 };
 
 export default ImageContainer;

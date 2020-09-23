@@ -1,5 +1,4 @@
 import React from 'react';
-import { loadImages } from '../utils/LoadImage';
 import ImageContainer from './ImageContainer';
 
 import { makeStyles } from '@material-ui/core';
@@ -16,7 +15,7 @@ const useStyles = makeStyles(() => {
 });
 
 const Header = (): JSX.Element => {
-  const [customHeaderReady, setCustomHeaderReady] = React.useState(false);
+  // const [customHeaderReady, setCustomHeaderReady] = React.useState(false);
 
   const classes = useStyles();
 
