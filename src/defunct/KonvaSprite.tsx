@@ -15,20 +15,32 @@ interface KonvaSpriteProps {
   frameIndex: number;
 }
 
-const TinyRect = (): JSX.Element => {
+interface Position {
+  x: number;
+  y: number;
+}
+
+interface TinyRectProps {
+  pos: Position;
+  w: number;
+  h: number;
+}
+
+export const TinyRect = (props: TinyRectProps): JSX.Element => {
+  const { pos, w, h } = props;
   return (
     <Rect
-      x={100}
-      y={100}
-      width={16}
-      height={16}
+      x={pos.x}
+      y={pos.y}
+      width={w}
+      height={h}
       fillLinearGradientStartPoint={{ x: 0, y: 0 }}
       fill={'red'}
     />
   );
 };
 
-const KonvaSprite = (props: KonvaSpriteProps): JSX.Element => {
+export const KonvaSprite = (props: KonvaSpriteProps): JSX.Element => {
   const {
     x,
     y,
@@ -54,11 +66,11 @@ const KonvaSprite = (props: KonvaSpriteProps): JSX.Element => {
       // console.error();
     };
     img.src = imageSrc;
-  }, [imageSrc]);
+  }, [imageSrc, error]);
 
   if (error) console.error(`There was an error loading image: ${imageSrc}`);
   return !loaded ? (
-    <TinyRect />
+    <TinyRect pos={{ x: 100, y: 100 }} w={10} h={10} />
   ) : (
     <Sprite
       x={x}
