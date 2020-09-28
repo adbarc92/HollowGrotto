@@ -1,10 +1,10 @@
 import React from 'react';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 // import Konva from 'konva';
 
 import { makeStyles } from '@material-ui/core';
 
-import { KonvaSprite, TinyRect } from 'defunct/KonvaSprite';
+import { KonvaSprite, TinyRect } from 'deprecated/KonvaSprite';
 
 const useStyles = makeStyles(() => {
   return {

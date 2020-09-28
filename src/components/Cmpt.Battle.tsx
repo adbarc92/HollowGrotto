@@ -2,7 +2,7 @@ import React from 'react';
 import { Stage, Layer, Group } from 'react-konva';
 import UnitCmpt from 'components/Cmpt.Unit';
 import { Battle } from 'model/Model.Battle';
-import BattleBackground from 'components/Cmpt.BattleBackground';
+import BattleBg from 'components/Cmpt.BattleBg';
 
 interface BattleProps {
   battle: Battle;
@@ -13,7 +13,7 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
   return (
     <Stage width={512} height={512}>
       <Layer imageSmoothingEnabled={false}>
-        <BattleBackground width={512} height={512} />
+        <BattleBg width={512} height={512} />
       </Layer>
       <Layer imageSmoothingEnabled={false}>
         <Group>

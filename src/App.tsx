@@ -1,14 +1,15 @@
+// NPM Module Imports
 import React, { useEffect } from 'react';
-import { Stage, Layer, Sprite } from 'react-konva';
-import Header from 'defunct/Header';
-import ReactCanvas from 'components/ReactCanvas';
-import { Party, createTestParty, partyAddCharacter } from 'model/Model.Party';
-import { loadImagesAndSprites, getSprite } from 'utils/Sprites';
-import UnitCmpt from 'components/Cmpt.Unit';
+// Custom Component Imports
 import BattleCmpt from 'components/Cmpt.Battle';
-import { ENCOUNTER_0, EncounterDef } from 'model/Model.Database'; // temporary
+import VerticalMenuCmpt from 'components/Cmpt.VerticalMenu';
+// JS13k Imports
+import { Party, createTestParty } from 'model/Model.Party';
+import { loadImagesAndSprites } from 'utils/Sprites';
 import { Battle, createBattle } from 'model/Model.Battle';
-
+import { ENCOUNTER_0, EncounterDef } from 'model/Model.Database'; // temporary
+// Material-UI Imports
+import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => {
@@ -18,12 +19,16 @@ const useStyles = makeStyles(() => {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+      padding: '10px',
+    },
+    menuContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      // alignItems: 'center',
+      justifyContent: 'center',
     },
   };
 });
-
-// import UnitDetails, { Unit } from './components/UnitDetails';
-// import ActionMenu from './components/ActionMenu';
 
 const App = (): JSX.Element => {
   const [scale, setScale] = React.useState(2);
@@ -51,16 +56,25 @@ const App = (): JSX.Element => {
   }, []);
   (window as any).AppInterface = AppInterface;
   if (loading) {
-    return <div>Loading</div>;
+    return <CircularProgress />;
   } else {
-    const sprite = getSprite('actors_0');
-    const [img, x, y, w, h] = sprite;
-    const animations = {
-      default: [x, y, w, h],
-    };
+    const options = [
+      'Strike',
+      'Charge',
+      'Break',
+      'Defend',
+      'Heal',
+      'Item',
+      'Flee',
+    ];
     return (
-      <div className={classes.canvasContainer}>
-        {battle ? <BattleCmpt battle={battle} /> : <div />}
+      <div>
+        <div className={classes.canvasContainer}>
+          {battle ? <BattleCmpt battle={battle} /> : <div />}
+        </div>
+        <div className={classes.menuContainer}>
+          <VerticalMenuCmpt options={options} />
+        </div>
       </div>
     );
   }
