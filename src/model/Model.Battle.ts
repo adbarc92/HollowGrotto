@@ -5,7 +5,7 @@ import { CharacterDef, EncounterDef } from 'model/Model.Database';
 import { Party } from 'model/Model.Party';
 import { getSpriteSize } from 'utils/Sprites';
 
-interface Round {
+export interface Round {
   turnOrder: Unit[];
   currentIndex: number;
 }
@@ -125,4 +125,8 @@ const createRound = (turnOrder: Unit[]): Round => {
 
 const battleAddRound = (battle: Battle, round: Round) => {
   battle.rounds.push(round);
+};
+
+export const battleGetCurrentRound = (battle: Battle): Round => {
+  return battle.rounds[battle.roundIndex];
 };
