@@ -258,4 +258,4 @@ export const loadImagesAndSprites = async () => {
 export const getSprite = (spriteName: string): Sprite =>
   (sprites as SpriteCollection)[spriteName];
 
-export const getSpriteSize = () => 16;
+export const getSpriteSize = (): number => 16;

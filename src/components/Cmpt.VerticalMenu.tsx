@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core';
+import { Battle } from 'model/Model.Battle';
 
 interface VerticalMenuProps {
   options: string[];
@@ -48,6 +49,7 @@ const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
             key={i}
             onMouseEnter={() => setMenuIndex(i)}
             onMouseLeave={() => setMenuIndex(null)}
+            // onClick={} //
           >
             {option}
           </span>

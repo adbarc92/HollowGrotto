@@ -36,7 +36,7 @@ export const CHARACTER_PROTAG: CharacterDef = {
   name: '',
   stats: {
     bS: createStats(90, 25, 16, 5, 20),
-    ai: AI.AI_PLAYER,
+    ai: AI.PLAYER,
   },
   sprI: 0,
 };
@@ -45,7 +45,7 @@ const golem: CharacterDef = {
   name: 'Golem',
   stats: {
     bS: createStats(35, 22, 40, 0, 5),
-    ai: AI.AI_STRIKER,
+    ai: AI.STRIKER,
   },
   sprI: 8,
 };
@@ -54,7 +54,7 @@ const fairy: CharacterDef = {
   name: 'Fairy',
   stats: {
     bS: createStats(30, 23, 9, 2, 15),
-    ai: AI.AI_CHARGER,
+    ai: AI.CHARGER,
   },
   sprI: 4,
 };

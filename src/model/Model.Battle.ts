@@ -4,6 +4,7 @@ import { Facing, actorSetFacing } from 'model/Model.Actor';
 import { CharacterDef, EncounterDef } from 'model/Model.Database';
 import { Party } from 'model/Model.Party';
 import { getSpriteSize } from 'utils/Sprites';
+import { areAllUnitsDead, getRandNum } from 'utils/Utils';
 
 export interface Round {
   turnOrder: Unit[];
@@ -17,6 +18,43 @@ export enum CompletionState {
   COMPLETION_IN_PROGRESS,
 }
 
+export enum RoundAction {
+  ACTION_STRIKE,
+  ACTION_CHARGE,
+  ACTION_INTERRUPT,
+  ACTION_DEFEND,
+  ACTION_HEAL,
+  ACTION_USE,
+  ACTION_FLEE,
+  ACTION_RENEW,
+}
+
+// type RoundAction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+// const G_ACTION_STRIKE: RoundAction = 0; // requires target
+// const G_ACTION_CHARGE: RoundAction = 1;
+// const G_ACTION_INTERRUPT: RoundAction = 2; // requires target
+// const G_ACTION_DEFEND: RoundAction = 3;
+// const G_ACTION_HEAL: RoundAction = 4;
+// const G_ACTION_USE: RoundAction = 5; // may require target
+// const G_ACTION_FLEE: RoundAction = 6;
+// const G_ACTION_RENEW: RoundAction = 7;
+const G_BATTLE_MENU_LABELS = [
+  // make sure these indices match above
+  'Strike',
+  'Charge',
+  'Break',
+  'Defend',
+  'Heal',
+  'Item',
+  'Flee',
+];
+
+let model_battlePostActionCb = () => {};
+export const setBattlePostActionCb = (cb: () => void): void => {
+  model_battlePostActionCb = cb;
+};
+export const getBattlePostActionCb = () => model_battlePostActionCb;
+
 export interface Battle {
   party: Party;
   allies: Unit[];
@@ -25,7 +63,7 @@ export interface Battle {
   roundIndex: 0;
   // actionMenuStack: Menu[];
   text: string;
-  // aiSeed: number;
+  aiSeed: number;
   completionState: CompletionState;
 }
 
@@ -105,7 +143,7 @@ export const createBattle = (party: Party, encounter: EncounterDef): Battle => {
     roundIndex: 0,
     // actionMenuStack,
     text: '',
-    // aiSeed: G_utils_getRandNum(3) + 1,
+    aiSeed: getRandNum(3) + 1,
     completionState: CompletionState.COMPLETION_IN_PROGRESS,
   };
 
@@ -116,17 +154,46 @@ export const createBattle = (party: Party, encounter: EncounterDef): Battle => {
   return battle;
 };
 
-const createRound = (turnOrder: Unit[]): Round => {
+export const battleAddRound = (battle: Battle, round: Round): void => {
+  battle.rounds.push(round);
+};
+
+export const battleGetCurrentRound = (battle: Battle): Round => {
+  return battle.rounds[battle.roundIndex];
+};
+
+export const battleIsComplete = (battle: Battle): boolean => {
+  return (
+    areAllUnitsDead(battle.enemies) ||
+    areAllUnitsDead(battle.allies) ||
+    battle.completionState !== CompletionState.COMPLETION_IN_PROGRESS
+  );
+};
+
+export const battleIncrementIndex = (battle: Battle) => {
+  battle.roundIndex++;
+};
+
+export const roundIsOver = (round: Round): boolean => {
+  return roundGetActingUnit(round) === null;
+};
+
+export const roundGetActingUnit = (round: Round): Unit | null => {
+  return round.turnOrder[round.currentIndex] || null;
+};
+
+export const roundIncrementIndex = (round: Round) => {
+  round.currentIndex++;
+};
+
+export const createRound = (turnOrder: Unit[]): Round => {
   return {
     turnOrder,
     currentIndex: 0,
   };
 };
 
-const battleAddRound = (battle: Battle, round: Round) => {
-  battle.rounds.push(round);
-};
-
-export const battleGetCurrentRound = (battle: Battle): Round => {
-  return battle.rounds[battle.roundIndex];
+// NOTE: Move this
+export const actionToString = (i: number): string => {
+  return G_BATTLE_MENU_LABELS[i];
 };

@@ -20,19 +20,9 @@ const useStyles = makeStyles(() => {
 const CANVAS_HEIGHT = 512;
 const CANVAS_WIDTH = 512;
 
-// const BackgroundRect = (props): JSX.Element => {
-//   return (
-//     <Rect
-//       x={0}
-//       y={0}
-//       width={CANVAS_WIDTH}
-//       height={CANVAS_HEIGHT}
-//       fillLinearGradientStartPoint={{ x: CANVAS_WIDTH / 2, y: 0 }}
-//       fillLinearGradientEndPoint={{ x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT }}
-//       fillLinearGradientColorStops={[0, '#aaf', 1, '#557']}
-//     />
-//   );
-// };
+export const getScreenSize = () => {
+  return CANVAS_HEIGHT;
+};
 
 const animations = {
   // idle: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]

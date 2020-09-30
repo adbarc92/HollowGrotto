@@ -10,7 +10,8 @@ interface UnitProps {
 
 // Visually representation of a unit
 const UnitCmpt = (props: UnitProps): JSX.Element => {
-  const { actor } = props.unit;
+  const { unit } = props;
+  const { actor } = unit;
   const { x, y } = actor;
   const [spriteName, offsetX, offsetY] = actorGetCurrentSpriteAndOffset(actor);
   const sprite = getSprite(spriteName);
@@ -32,7 +33,7 @@ const UnitCmpt = (props: UnitProps): JSX.Element => {
       frameRate={0}
       frameIndex={0}
       scale={scale}
-    ></Sprite>
+    />
   );
 };
 

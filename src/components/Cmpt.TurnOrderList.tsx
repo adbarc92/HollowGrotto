@@ -1,9 +1,11 @@
 import React from 'react';
+
 import { Unit, Allegiance } from 'model/Model.Unit';
+import { Battle, battleGetCurrentRound } from 'model/Model.Battle';
+
+import { isAlly } from 'utils/Utils';
 
 import { makeStyles } from '@material-ui/core';
-import { Battle } from 'model/Model.Battle';
-import { isAlly } from 'utils/Utils';
 
 const useStyles = makeStyles(() => {
   return {
@@ -53,6 +55,8 @@ const TurnListItem = (props: TurnListItemProps): JSX.Element => {
           ? classes.listItemAlly
           : classes.listItemEnemy
       }
+      // onMouseEnter={() => toggleUnitHighlight(unit)}
+      // onMouseLeave={() => toggleUnitHighlight(unit)}
     >
       {name}
     </span>
@@ -61,7 +65,8 @@ const TurnListItem = (props: TurnListItemProps): JSX.Element => {
 
 const TurnListCmpt = (props: TurnListProps): JSX.Element => {
   const classes = useStyles();
-  const { turnOrder, battle } = props;
+  const { battle } = props;
+  const { turnOrder } = battleGetCurrentRound(battle);
   return (
     <div className={classes.list}>
       {turnOrder.map((unit, i) => {
