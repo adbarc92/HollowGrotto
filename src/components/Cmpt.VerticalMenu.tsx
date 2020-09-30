@@ -2,9 +2,11 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core';
 import { Battle } from 'model/Model.Battle';
+import { Menu, menuSelectCurrentItem } from 'model/Model.Menu';
 
 interface VerticalMenuProps {
-  options: string[];
+  // options: string[];
+  menu: Menu;
   menuIndex: null | number;
   setMenuIndex: (menuIndex: number | null) => void;
 }
@@ -39,7 +41,8 @@ const useStyles = makeStyles(() => {
 
 const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
   const classes = useStyles();
-  const { options, menuIndex, setMenuIndex } = props;
+  const { menu, menuIndex, setMenuIndex } = props;
+  const options = menu.items;
   return (
     <div className={classes.menuContainer}>
       {options.map((option, i) => {
@@ -49,7 +52,10 @@ const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
             key={i}
             onMouseEnter={() => setMenuIndex(i)}
             onMouseLeave={() => setMenuIndex(null)}
-            // onClick={} //
+            onClick={() => {
+              menu.i = menuIndex as number;
+              menuSelectCurrentItem(menu);
+            }} //
           >
             {option}
           </span>

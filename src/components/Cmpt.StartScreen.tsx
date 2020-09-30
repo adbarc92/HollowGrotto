@@ -1,4 +1,17 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(() => {
+  return {
+    startScreen: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  };
+});
 
 interface StartScreenProps {
   setGameStarted: (gamestarted: boolean) => void;
@@ -8,8 +21,13 @@ interface StartScreenProps {
 
 const StartScreenCmpt = (props: StartScreenProps): JSX.Element => {
   const { setGameStarted } = props;
+  const classes = useStyles();
 
-  return <div onClick={() => setGameStarted(true)}>Click to start</div>;
+  return (
+    <div className={classes.startScreen} onClick={() => setGameStarted(true)}>
+      Click to start
+    </div>
+  );
 };
 
 export default StartScreenCmpt;

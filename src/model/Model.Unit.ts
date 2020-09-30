@@ -1,16 +1,21 @@
 import { Actor, actorSetFacing, actorSetPosition } from 'model/Model.Actor';
 import { CharacterDef, StatsDef } from 'model/Model.Database';
 import { Facing } from 'model/Model.Actor';
-import { battleGetScreenPosition, RoundAction } from 'model/Model.Battle';
+import {
+  battleGetScreenPosition,
+  RoundAction,
+  Battle,
+} from 'model/Model.Battle';
 import { getScreenSize } from 'components/ReactCanvas';
 import { getSpriteSize } from 'utils/Sprites';
+import { isAlly } from 'utils/Utils';
 
 export enum AI {
-  AI_PLAYER,
-  AI_CHARGER,
-  AI_STRIKER,
-  AI_BREAKER,
-  AI_BOSS,
+  PLAYER,
+  CHARGER,
+  STRIKER,
+  BREAKER,
+  BOSS,
 }
 
 export enum Allegiance {
@@ -140,6 +145,10 @@ export const statsModifyHp = (
 
 export const unitGainBreakCharge = (unit: Unit): void => {
   unit.cS.iCnt++;
+};
+
+export const unitGetTeam = (battle: Battle, unit: Unit): Unit[] => {
+  return isAlly(battle, unit) ? battle.allies : battle.enemies;
 };
 
 // Seems like a bad idea...

@@ -113,7 +113,7 @@ const App = (): JSX.Element => {
             <VerticalMenuCmpt
               setMenuIndex={setMenuIndex}
               menuIndex={menuIndex}
-              options={options}
+              menu={currentBattle.actionMenuStack[0]}
             />
           ) : (
             <div />

@@ -26,7 +26,9 @@ import {
   unitResetPosition,
   statsModifyHp,
   unitGainBreakCharge,
+  unitGetTeam,
 } from 'model/Model.Unit';
+import { createVerticalMenu } from 'model/Model.Menu';
 import { getScreenSize } from 'components/ReactCanvas';
 import { Item } from 'model/Model.Party';
 import { areAllUnitsDead, isAlly, waitMs } from 'utils/Utils';
@@ -77,8 +79,8 @@ const roundEnd = (round: Round): Round => {
 };
 
 export const battleSimulateBattle = async (battle: Battle) => {
-  (window as any).setCurrentBattle(battle);
-  (window as any).setInputEnabled(false);
+  (window as any).AppInterface.setCurrentBattle(battle);
+  (window as any).AppInterface.setInputEnabled(false);
 
   while (!battleIsComplete(battle)) {
     await battleSimulateNextRound(battle); // do the fight!
@@ -93,7 +95,7 @@ export const battleSimulateBattle = async (battle: Battle) => {
       battle.completionState = CompletionState.COMPLETION_INCONCLUSIVE;
     }
   }
-  (window as any).setCurrentBattle(null);
+  (window as any).AppInterface.setCurrentBattle(null);
 };
 
 const battleSimulateNextRound = async (battle: Battle) => {
@@ -128,7 +130,7 @@ const controller_battleSimulateTurn = async (
     actingUnit.cS.spd = actingUnit.bS.spd;
     return;
   }
-  const team = isAlly(battle, actingUnit) ? battle.allies : battle.enemies;
+  const team = unitGetTeam(battle, actingUnit);
   unitMoveForward(team, actingUnit);
   return new Promise(resolve => {
     setBattlePostActionCb(resolve);
@@ -141,10 +143,10 @@ const controller_battleSimulateTurn = async (
           i => i !== 2 && i !== 4
         );
       }
-      actionMenu.i = -1;
-      G_model_menuSetNextCursorIndex(actionMenu, 1, true);
+      // actionMenu.i = -1;
+      // G_model_menuSetNextCursorIndex(actionMenu, 1, true);
       // G_model_setBattleInputEnabled(true);
-      (window as any).setInputEnabled(true);
+      (window as any).AppInterface.setInputEnabled(true);
     } else {
       setTimeout(() => {
         doAI(battle, round, actingUnit);
@@ -160,8 +162,8 @@ export const roundApplyAction = async (
   item?: Item
 ) => {
   // G_model_setBattleInputEnabled(false);
-  (window as any).setInputEnabled(false);
-  const battle = (window as any).currentBattle;
+  (window as any).AppInterface.setInputEnabled(false);
+  const battle = (window as any).AppInterface.currentBattle;
   // const battle = G_model_getCurrentBattle();
   const actingUnit = roundGetActingUnit(round) as Unit;
   unitSetToCenter(actingUnit);
@@ -220,7 +222,7 @@ export const roundApplyAction = async (
   }
 
   await waitMs(1250);
-  const team = isAlly(battle, actingUnit) ? battle.allies : battle.enemies;
+  const team = unitGetTeam(battle, actingUnit);
   unitResetPosition(actingUnit, team);
   // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_DEFAULT);
 
@@ -280,7 +282,7 @@ const G_controller_battleActionDefend = (unit: Unit) => {
 
 const G_controller_battleActionFlee = () => {
   // const battle = G_model_getCurrentBattle();
-  const battle = (window as any).currentBattle;
+  const battle = (window as any).AppInterface.currentBattle;
   battle.completionState = CompletionState.COMPLETION_INCONCLUSIVE;
 };
 
@@ -288,7 +290,7 @@ const G_controller_battleActionRenew = (unit: Unit) => {
   unit.cS.iCnt = unit.bS.mag;
 };
 
-const G_controller_battleSelectItem = async (
+export const battleSelectItem = async (
   battle: Battle
 ): Promise<Item | null> => {
   return new Promise(resolve => {
@@ -308,7 +310,7 @@ const G_controller_battleSelectItem = async (
     const lineHeight = 20;
     const x = screenSize / 2 - menuWidth / 2;
     const y = screenSize - screenSize / 2;
-    const itemMenu = G_model_createVerticalMenu(
+    const itemMenu = createVerticalMenu(
       x,
       y,
       menuWidth,
@@ -321,8 +323,8 @@ const G_controller_battleSelectItem = async (
       true,
       lineHeight
     );
-    itemMenu.i = -1;
-    G_model_menuSetNextCursorIndex(itemMenu, 1);
+    // itemMenu.i = -1;
+    // G_model_menuSetNextCursorIndex(itemMenu, 1);
     battle.actionMenuStack.unshift(itemMenu); // transfers input to the newly-created menu
   });
 };
