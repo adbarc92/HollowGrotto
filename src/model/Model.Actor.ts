@@ -94,6 +94,6 @@ export const actorSetPosition = (actor: Actor, x: number, y: number): void => {
   actor.y = y;
 };
 
-const actorGetPosition = (actor: Actor): [number, number] => {
+export const actorGetPosition = (actor: Actor): [number, number] => {
   return [actor.x, actor.y];
 };

@@ -1,23 +1,15 @@
 // Model Imports
-import {
-  Allegiance,
-  Unit,
-  unitResetPosition,
-  unitLives,
-} from 'model/Model.Unit';
+import { Allegiance, Unit, unitResetPosition } from 'model/Model.Unit';
 import { Character, createCharacterFromTemplate } from 'model/Model.Character';
 import { Facing, actorSetFacing } from 'model/Model.Actor';
 import { CharacterDef, EncounterDef } from 'model/Model.Database';
 import { Party } from 'model/Model.Party';
-import { createVerticalMenu } from 'model/Model.Menu';
+
 // Utility Imports
 import { getSpriteSize } from 'utils/Sprites';
 import { areAllUnitsDead, getRandNum } from 'utils/Utils';
-import { Menu } from 'model/Model.Menu';
 // Component Imports
-import { getScreenSize } from 'components/ReactCanvas';
 // Controller Imports
-import { roundApplyAction, battleSelectItem } from 'controller/combat';
 
 export interface Round {
   turnOrder: Unit[];
@@ -42,7 +34,7 @@ export enum RoundAction {
   ACTION_RENEW,
 }
 
-const G_BATTLE_MENU_LABELS = [
+export const G_BATTLE_MENU_LABELS = [
   // make sure these indices match above
   'Strike',
   'Charge',
@@ -53,11 +45,14 @@ const G_BATTLE_MENU_LABELS = [
   'Flee',
 ];
 
-let model_battlePostActionCb = () => {};
+let model_battlePostActionCb = () => {
+  console.log('surprise pizza');
+};
 export const setBattlePostActionCb = (cb: () => void): void => {
   model_battlePostActionCb = cb;
 };
-export const getBattlePostActionCb = () => model_battlePostActionCb;
+export const getBattlePostActionCb = (): (() => void) =>
+  model_battlePostActionCb;
 
 export interface Battle {
   party: Party;
@@ -65,7 +60,7 @@ export interface Battle {
   enemies: Unit[];
   rounds: Round[];
   roundIndex: 0;
-  actionMenuStack: Menu[];
+  actionMenuStack: [];
   text: string;
   aiSeed: number;
   completionState: CompletionState;
@@ -116,123 +111,107 @@ const makeEnemies = (monsters: CharacterDef[]) => {
   return monsterParty;
 };
 
-const selectTarget = async (battle: Battle): Promise<Unit | null> => {
-  return new Promise(resolve => {
-    const targets = battle.enemies;
+// const selectTarget = async (battle: Battle): Promise<Unit | null> => {
+//   return new Promise(resolve => {
+//     const targets = battle.enemies;
 
-    const [startX, startY] = battleGetScreenPosition(
-      battle.allies,
-      0,
-      Allegiance.ALLEGIANCE_ENEMY
-    );
+//     const [startX, startY] = battleGetScreenPosition(
+//       battle.allies,
+//       0,
+//       Allegiance.ALLEGIANCE_ENEMY
+//     );
 
-    const disabledItems = battle.enemies
-      .map((_, i) => {
-        return i;
-      })
-      .filter(i => {
-        return !unitLives(battle.enemies[i]);
-      });
+//     const disabledItems = battle.enemies
+//       .map((_, i) => {
+//         return i;
+//       })
+//       .filter(i => {
+//         return !unitLives(battle.enemies[i]);
+//       });
 
-    const scale = (window as any).AppInterface.scale;
+//     const scale = (window as any).AppInterface.scale;
 
-    // const x = startX * G_BATTLE_SCALE - G_CURSOR_WIDTH;
-    // const y = startY * G_BATTLE_SCALE + G_CURSOR_HEIGHT / 2; // ???
-    const x = startX * scale - 16;
-    const y = startY * scale - 16;
-    const h = 16 * scale; // lineHeight in pixels; constant is same value as battleGetScreenPosition's margin
-    const targetMenu = createVerticalMenu(
-      x,
-      y,
-      100, // set this to 100 so I could debug by turning on the background
-      Array(targets.length).fill(''),
-      // this function is called when a target is selected
-      (i: number) => {
-        battle.actionMenuStack.shift(); // returns input to the last menu
-        if (i >= 0) {
-          resolve(targets[i]);
-        } else {
-          resolve(null);
-        }
-      },
-      disabledItems,
-      false,
-      h
-    );
-    // targetMenu.i = -1;
-    // G_model_menuSetNextCursorIndex(targetMenu, 1);
-    battle.actionMenuStack.unshift(targetMenu); // transfers input to the newly-created menu
-  });
-};
+//     // const x = startX * G_BATTLE_SCALE - G_CURSOR_WIDTH;
+//     // const y = startY * G_BATTLE_SCALE + G_CURSOR_HEIGHT / 2; // ???
+//     const x = startX * scale - 16;
+//     const y = startY * scale - 16;
+//     const h = 16 * scale; // lineHeight in pixels; constant is same value as battleGetScreenPosition's margin
+// const targetMenu = createVerticalMenu(
+//   x,
+//   y,
+//   100, // set this to 100 so I could debug by turning on the background
+//   Array(targets.length).fill(''),
+//   // this function is called when a target is selected
+//   (i: number) => {
+//     battle.actionMenuStack.shift(); // returns input to the last menu
+//     if (i >= 0) {
+//       resolve(targets[i]);
+//     } else {
+//       resolve(null);
+//     }
+//   },
+//   disabledItems,
+//   false,
+//   h
+// );
+// targetMenu.i = -1;
+// G_model_menuSetNextCursorIndex(targetMenu, 1);
+// battle.actionMenuStack.unshift(targetMenu); // transfers input to the newly-created menu
+//   });
+// };
 
-const handleActionMenuSelected = async (i: RoundAction) => {
-  // const battle = G_model_getCurrentBattle();
-  const battle = (window as any).AppInterface.currentBattle;
-  const round = battleGetCurrentRound(battle);
+// export const handleActionMenuSelected = async (
+//   i: RoundAction,
+//   setPlayerInputState: (PlayerInputState) => void
+// ): Promise<void> => {
+//   // const battle = G_model_getCurrentBattle();
+//   const battle = (window as any).AppInterface.currentBattle;
+//   const round = battleGetCurrentRound(battle);
 
-  switch (i) {
-    case RoundAction.ACTION_STRIKE: {
-      const target: Unit | null = await selectTarget(battle);
-      if (target) {
-        roundApplyAction(RoundAction.ACTION_STRIKE, round, target);
-      }
-      break;
-    }
-    case RoundAction.ACTION_CHARGE:
-      roundApplyAction(RoundAction.ACTION_CHARGE, round, null);
-      break;
-    case RoundAction.ACTION_DEFEND:
-      roundApplyAction(RoundAction.ACTION_DEFEND, round, null);
-      break;
-    case RoundAction.ACTION_HEAL:
-      roundApplyAction(RoundAction.ACTION_HEAL, round, null);
-      break;
-    case RoundAction.ACTION_USE: {
-      const item = await battleSelectItem(battle);
-      if (item) {
-        roundApplyAction(RoundAction.ACTION_USE, round, null, item);
-      }
-      battle.actionMenuStack.shift();
-      break;
-    }
-    case RoundAction.ACTION_INTERRUPT: {
-      const target: Unit | null = await selectTarget(battle);
-      if (!target) {
-        roundApplyAction(RoundAction.ACTION_INTERRUPT, round, target);
-      }
-      break;
-    }
-    case RoundAction.ACTION_FLEE: {
-      roundApplyAction(RoundAction.ACTION_FLEE, round, null);
-      break;
-    }
-    default:
-      console.error('Action', i, 'Is not implemented yet.');
-  }
-};
+//   switch (i) {
+//     case RoundAction.ACTION_STRIKE: {
+//       const target: Unit | null = await selectTarget(battle);
+//       if (target) {
+//         roundApplyAction(RoundAction.ACTION_STRIKE, round, target);
+//       }
+//       break;
+//     }
+//     case RoundAction.ACTION_CHARGE:
+//       roundApplyAction(RoundAction.ACTION_CHARGE, round, null);
+//       break;
+//     case RoundAction.ACTION_DEFEND:
+//       roundApplyAction(RoundAction.ACTION_DEFEND, round, null);
+//       break;
+//     case RoundAction.ACTION_HEAL:
+//       roundApplyAction(RoundAction.ACTION_HEAL, round, null);
+//       break;
+//     case RoundAction.ACTION_USE: {
+//       const item = await battleSelectItem(battle);
+//       if (item) {
+//         roundApplyAction(RoundAction.ACTION_USE, round, null, item);
+//       }
+//       // battle.actionMenuStack.shift();
+//       setPlayerInputState(PlayerInputState.InputDisabled);
+//       break;
+//     }
+//     case RoundAction.ACTION_INTERRUPT: {
+//       const target: Unit | null = await selectTarget(battle);
+//       if (!target) {
+//         roundApplyAction(RoundAction.ACTION_INTERRUPT, round, target);
+//       }
+//       break;
+//     }
+//     case RoundAction.ACTION_FLEE: {
+//       roundApplyAction(RoundAction.ACTION_FLEE, round, null);
+//       break;
+//     }
+//     default:
+//       console.error('Action', i, 'Is not implemented yet.');
+//   }
+// };
 
 export const createBattle = (party: Party, encounter: EncounterDef): Battle => {
   // advantage = advantage || G_ADVANTAGE_NONE;
-
-  const screenSize = getScreenSize();
-  const menuWidth = 100;
-  const lineHeight = 20;
-  const x = screenSize / 2 - menuWidth / 2;
-  const y = screenSize - lineHeight * G_BATTLE_MENU_LABELS.length;
-  const actionMenuStack = [
-    createVerticalMenu(
-      x,
-      y,
-      menuWidth,
-      G_BATTLE_MENU_LABELS,
-      handleActionMenuSelected,
-      party.inv.filter(item => !!item.onUse).length
-        ? []
-        : [RoundAction.ACTION_USE], //  if no items, disable items, if items enable it
-      true,
-      lineHeight
-    ),
-  ];
 
   const allies = makeAllies(party.characters);
   const enemies = makeEnemies(encounter.enemies);
@@ -242,7 +221,7 @@ export const createBattle = (party: Party, encounter: EncounterDef): Battle => {
     enemies,
     rounds: [],
     roundIndex: 0,
-    actionMenuStack,
+    actionMenuStack: [],
     text: '',
     aiSeed: getRandNum(3) + 1,
     completionState: CompletionState.COMPLETION_IN_PROGRESS,
@@ -271,7 +250,7 @@ export const battleIsComplete = (battle: Battle): boolean => {
   );
 };
 
-export const battleIncrementIndex = (battle: Battle) => {
+export const battleIncrementIndex = (battle: Battle): void => {
   battle.roundIndex++;
 };
 
@@ -283,7 +262,7 @@ export const roundGetActingUnit = (round: Round): Unit | null => {
   return round.turnOrder[round.currentIndex] || null;
 };
 
-export const roundIncrementIndex = (round: Round) => {
+export const roundIncrementIndex = (round: Round): void => {
   round.currentIndex++;
 };
 

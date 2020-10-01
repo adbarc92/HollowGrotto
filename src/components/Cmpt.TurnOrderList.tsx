@@ -35,7 +35,6 @@ const useStyles = makeStyles(() => {
 });
 
 interface TurnListProps {
-  turnOrder: Unit[];
   battle: Battle;
 }
 

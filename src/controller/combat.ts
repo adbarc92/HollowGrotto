@@ -1,3 +1,4 @@
+// Model Imports
 import { Battle } from 'model/Model.Battle';
 import {
   CompletionState,
@@ -13,9 +14,8 @@ import {
   RoundAction,
   getBattlePostActionCb,
   setBattlePostActionCb,
-  actionToString,
 } from 'model/Model.Battle';
-import { doAI } from 'controller/ai';
+import { Item } from 'model/Model.Party';
 import {
   Unit,
   unitLives,
@@ -28,40 +28,41 @@ import {
   unitGainBreakCharge,
   unitGetTeam,
 } from 'model/Model.Unit';
-import { createVerticalMenu } from 'model/Model.Menu';
-import { getScreenSize } from 'components/ReactCanvas';
-import { Item } from 'model/Model.Party';
+
+// Controller Imports
+import { doAI } from 'controller/ai';
+// Utils Imports
 import { areAllUnitsDead, isAlly, waitMs } from 'utils/Utils';
 
-// const G_controller_doBattle = async (battle: Battle) => {
-//   return new Promise(async resolve => {
-//     (window as any).AppInterface.setCurrentBattle(battle);
-//     G_model_setBattleInputEnabled(false);
+export const doBattle = async (battle: Battle): Promise<null> => {
+  return new Promise(async resolve => {
+    // (window as any).AppInterface.setCurrentBattle(battle);
+    // G_model_setBattleInputEnabled(false);
 
-//     while (!G_model_battleIsComplete(battle)) {
-//       await G_controller_battleSimulateNextRound(battle); // do the fight!
-//     }
+    while (!battleIsComplete(battle)) {
+      await battleSimulateNextRound(battle); // do the fight!
+    }
 
-//     if (battle.completionState === G_COMPLETION_IN_PROGRESS) {
-//       if (G_utils_areAllUnitsDead(battle.allies)) {
-//         battle.completionState = G_COMPLETION_FAILURE;
-//       } else if (G_utils_areAllUnitsDead(battle.enemies)) {
-//         battle.completionState = G_COMPLETION_VICTORY;
-//       } else {
-//         battle.completionState = G_COMPLETION_INCONCLUSIVE;
-//       }
-//     }
-//     G_model_setCurrentBattle(null);
-//     resolve();
-//   });
+    if (battle.completionState === CompletionState.COMPLETION_IN_PROGRESS) {
+      if (areAllUnitsDead(battle.allies)) {
+        battle.completionState = CompletionState.COMPLETION_FAILURE;
+      } else if (areAllUnitsDead(battle.enemies)) {
+        battle.completionState = CompletionState.COMPLETION_VICTORY;
+      } else {
+        battle.completionState = CompletionState.COMPLETION_INCONCLUSIVE;
+      }
+    }
+    (window as any).AppInterface.setCurrentBattle(null);
+    resolve();
+  });
 
-//   // console.log('Battle complete!');
-//   // setTimeout(() => {
-//   //   const battle2 = G_model_createBattle(battle.party, G_ENCOUNTER_0);
-//   //   G_model_setCurrentBattle(battle2);
-//   //   G_controller_doBattle(battle2);
-//   // }, 2000); // For debugging
-// };
+  // console.log('Battle complete!');
+  // setTimeout(() => {
+  //   const battle2 = createBattle(battle.party, ENCOUNTER_0);
+  //   (window as any).AppInterface.setCurrentBattle(battle2);
+  //   doBattle(battle2);
+  // }, 2000); // For debugging
+};
 
 const roundInit = (round: Round) => {
   // console.log('Start new round:', round);
@@ -78,8 +79,8 @@ const roundEnd = (round: Round): Round => {
   return createRound(round.turnOrder); // Change
 };
 
-export const battleSimulateBattle = async (battle: Battle) => {
-  (window as any).AppInterface.setCurrentBattle(battle);
+export const battleSimulateBattle = async (battle: Battle): Promise<void> => {
+  // (window as any).AppInterface.setCurrentBattle(battle);
   (window as any).AppInterface.setInputEnabled(false);
 
   while (!battleIsComplete(battle)) {
@@ -134,21 +135,22 @@ const controller_battleSimulateTurn = async (
   unitMoveForward(team, actingUnit);
   return new Promise(resolve => {
     setBattlePostActionCb(resolve);
-    const actionMenu = battle.actionMenuStack[0];
+    // const actionMenu = battle.actionMenuStack[0];
     if (isAlly(battle, actingUnit)) {
       if (actingUnit.cS.iCnt <= 0) {
-        actionMenu.disabledItems.push(2, 4);
-      } else {
-        actionMenu.disabledItems = actionMenu.disabledItems.filter(
-          i => i !== 2 && i !== 4
-        );
+        //   actionMenu.disabledItems.push(2, 4);
+        // } else {
+        //   actionMenu.disabledItems = actionMenu.disabledItems.filter(
+        //     i => i !== 2 && i !== 4
+        //   );
       }
       // actionMenu.i = -1;
       // G_model_menuSetNextCursorIndex(actionMenu, 1, true);
       // G_model_setBattleInputEnabled(true);
-      (window as any).AppInterface.setInputEnabled(true);
+      (window as any).BattleInterface.setPlayerReady();
     } else {
       setTimeout(() => {
+        console.log('Enemy action!');
         doAI(battle, round, actingUnit);
       }, 1000);
     }
@@ -160,18 +162,19 @@ export const roundApplyAction = async (
   round: Round,
   target: Unit | null,
   item?: Item
-) => {
+): Promise<void> => {
   // G_model_setBattleInputEnabled(false);
-  (window as any).AppInterface.setInputEnabled(false);
+  // (window as any).AppInterface.setInputEnabled(false);
   const battle = (window as any).AppInterface.currentBattle;
   // const battle = G_model_getCurrentBattle();
   const actingUnit = roundGetActingUnit(round) as Unit;
   unitSetToCenter(actingUnit);
+
   // Change animations here
 
   // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_ATTACKING);
 
-  battle.text = actionToString(action);
+  // battle.text = actionToString(action);
   await waitMs(1000);
   unitModifySpeed(actingUnit, action);
   switch (action) {
@@ -223,10 +226,12 @@ export const roundApplyAction = async (
 
   await waitMs(1250);
   const team = unitGetTeam(battle, actingUnit);
+  console.log('Reset');
   unitResetPosition(actingUnit, team);
+  // Rerender here
   // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_DEFAULT);
 
-  battle.text = '';
+  // battle.text = '';
 
   await waitMs(500);
   getBattlePostActionCb()(); // resolve is called here
@@ -290,44 +295,44 @@ const G_controller_battleActionRenew = (unit: Unit) => {
   unit.cS.iCnt = unit.bS.mag;
 };
 
-export const battleSelectItem = async (
-  battle: Battle
-): Promise<Item | null> => {
-  return new Promise(resolve => {
-    const indexMap = {};
-    const party = battle.party;
-    let ctr = 0;
-    const itemNames = party.inv
-      .filter((item, i) => {
-        indexMap[ctr] = i;
-        ctr++;
-        return !!item.onUse;
-      })
-      .map(item => item.name);
+// export const battleSelectItem = async (
+//   battle: Battle
+// ): Promise<Item | null> => {
+//   return new Promise(resolve => {
+//     const indexMap = {};
+//     const party = battle.party;
+//     let ctr = 0;
+//     const itemNames = party.inv
+//       .filter((item, i) => {
+//         indexMap[ctr] = i;
+//         ctr++;
+//         return !!item.onUse;
+//       })
+//       .map(item => item.name);
 
-    const screenSize = getScreenSize();
-    const menuWidth = 100;
-    const lineHeight = 20;
-    const x = screenSize / 2 - menuWidth / 2;
-    const y = screenSize - screenSize / 2;
-    const itemMenu = createVerticalMenu(
-      x,
-      y,
-      menuWidth,
-      itemNames,
-      (i: number) => {
-        const itemToUse = party.inv[indexMap[i]];
-        resolve(itemToUse);
-      },
-      [],
-      true,
-      lineHeight
-    );
-    // itemMenu.i = -1;
-    // G_model_menuSetNextCursorIndex(itemMenu, 1);
-    battle.actionMenuStack.unshift(itemMenu); // transfers input to the newly-created menu
-  });
-};
+//     const screenSize = getScreenSize();
+//     const menuWidth = 100;
+//     const lineHeight = 20;
+//     const x = screenSize / 2 - menuWidth / 2;
+//     const y = screenSize - screenSize / 2;
+// const itemMenu = createVerticalMenu(
+//   x,
+//   y,
+//   menuWidth,
+//   itemNames,
+//   (i: number) => {
+//     const itemToUse = party.inv[indexMap[i]];
+//     resolve(itemToUse);
+//   },
+//   [],
+//   true,
+//   lineHeight
+// );
+// itemMenu.i = -1;
+// G_model_menuSetNextCursorIndex(itemMenu, 1);
+// battle.actionMenuStack.unshift(itemMenu); // transfers input to the newly-created menu
+//   });
+// };
 
 const controller_roundRemoveDeadUnits = (round: Round): boolean => {
   const { turnOrder } = round;

@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core';
-import { Battle } from 'model/Model.Battle';
-import { Menu, menuSelectCurrentItem } from 'model/Model.Menu';
 
+// Should manage its own state--state is not passed in
 interface VerticalMenuProps {
-  // options: string[];
-  menu: Menu;
-  menuIndex: null | number;
-  setMenuIndex: (menuIndex: number | null) => void;
+  // menu: Menu;
+  // menuIndex: null | number;
+  // setMenuIndex: (menuIndex: number | null) => void;
+  items: string[];
+  cb: (i: number) => void;
+  cancelCb: () => void;
+  disabledItems?: number[];
+  backgroundColor?: string;
+  defaultIndex?: number;
 }
 
 const useStyles = makeStyles(() => {
@@ -34,18 +38,32 @@ const useStyles = makeStyles(() => {
     },
     menuItem: {
       color: 'white',
-      textShadow: 'gray 1px 0 5px',
+      textShadow: 'black 1px 0 5px',
     },
   };
 });
 
 const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
   const classes = useStyles();
-  const { menu, menuIndex, setMenuIndex } = props;
-  const options = menu.items;
+  const [menuIndex, setMenuIndex] = React.useState<null | number>(null);
+  const { items, cb } = props;
+
+  useEffect(() => {
+    const onKeyDown = (ev: KeyboardEvent) => {
+      if (ev.which === 27) {
+        props.cancelCb();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    // Return value executes when component unmounts
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [props]);
+
   return (
     <div className={classes.menuContainer}>
-      {options.map((option, i) => {
+      {items.map((option, i) => {
         return (
           <span
             className={menuIndex === i ? classes.menuItemLit : classes.menuItem}
@@ -53,8 +71,7 @@ const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
             onMouseEnter={() => setMenuIndex(i)}
             onMouseLeave={() => setMenuIndex(null)}
             onClick={() => {
-              menu.i = menuIndex as number;
-              menuSelectCurrentItem(menu);
+              cb(i);
             }} //
           >
             {option}

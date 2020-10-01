@@ -94,8 +94,10 @@ export const unitMoveForward = (team: Unit[], unit: Unit): void => {
 };
 
 export const unitSetToCenter = (unit: Unit): void => {
-  const screenSize = getScreenSize() / (window as any).scale;
-  const spriteSize = getSpriteSize();
+  const screenSize = getScreenSize();
+  console.log('screenSize:', screenSize);
+  const spriteSize = getSpriteSize() * (window as any).AppInterface.scale;
+  console.log('spriteSize:', spriteSize);
   const center = screenSize / 2 - spriteSize / 2;
   actorSetPosition(unit.actor, center, center);
 };

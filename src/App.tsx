@@ -2,19 +2,14 @@
 import React, { useEffect } from 'react';
 // Custom Component Imports
 import BattleCmpt from 'components/Cmpt.Battle';
-import VerticalMenuCmpt from 'components/Cmpt.VerticalMenu';
-// import TurnOrderCmpt from 'components/Cmpt.TurnOrder';
-import TurnOrderList from 'components/Cmpt.TurnOrderList';
 import StartScreenCmpt from 'components/Cmpt.StartScreen';
-// JS13k Imports
+// Model Imports
 import { Party, createTestParty } from 'model/Model.Party';
-import { loadImagesAndSprites } from 'utils/Sprites';
-import {
-  Battle,
-  createBattle,
-  battleGetCurrentRound,
-} from 'model/Model.Battle';
+import { Battle, createBattle } from 'model/Model.Battle';
 import { ENCOUNTER_0, EncounterDef } from 'model/Model.Database'; // temporary
+// Controller Imports
+// Utils Imports
+import { loadImagesAndSprites } from 'utils/Sprites';
 // Material-UI Imports
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
@@ -28,12 +23,6 @@ const useStyles = makeStyles(() => {
       alignItems: 'center',
       padding: '10px',
     },
-    menuContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      // alignItems: 'center',
-      justifyContent: 'center',
-    },
     topContainer: {
       display: 'flex',
       flexDirection: 'row',
@@ -46,16 +35,14 @@ const App = (): JSX.Element => {
   const [scale, setScale] = React.useState<number>(2);
   const classes = useStyles();
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
   const [currentBattle, setCurrentBattle] = React.useState<null | Battle>(null);
-  const [inputEnabled, setInputEnabled] = React.useState<boolean>(true);
   const [gameStarted, setGameStarted] = React.useState(false);
-  const [menuIndex, setMenuIndex] = React.useState<null | number>(null);
 
   const AppInterface = {
     setLoading,
     setScale,
     setCurrentBattle,
-    setInputEnabled,
     currentBattle,
     scale,
   };
@@ -69,11 +56,13 @@ const App = (): JSX.Element => {
       setLoading(false);
       const battleTemp = createBattle(party, enemies);
       setCurrentBattle(battleTemp);
-      // display click to start
     };
+    if (!isLoaded) {
+      load();
+      setIsLoaded(true);
+    }
+  }, [isLoaded, enemies, party, currentBattle]);
 
-    load();
-  }, []);
   (window as any).AppInterface = AppInterface;
 
   if (loading) {
@@ -81,15 +70,6 @@ const App = (): JSX.Element => {
   } else if (!gameStarted) {
     return <StartScreenCmpt setGameStarted={setGameStarted} />;
   } else {
-    const options = [
-      'Strike',
-      'Charge',
-      'Break',
-      'Defend',
-      'Heal',
-      'Item',
-      'Flee',
-    ];
     // Should return a battle component with currentBattle, which includes a battle display, turn order display, and vertical menu component
     return (
       <div>
@@ -97,27 +77,6 @@ const App = (): JSX.Element => {
           <div className={classes.canvasContainer}>
             {currentBattle ? <BattleCmpt battle={currentBattle} /> : <div />}
           </div>
-          <div>
-            {currentBattle ? (
-              <TurnOrderList
-                battle={currentBattle}
-                turnOrder={battleGetCurrentRound(currentBattle).turnOrder}
-              />
-            ) : (
-              <div />
-            )}
-          </div>
-        </div>
-        <div className={classes.menuContainer}>
-          {currentBattle && inputEnabled ? (
-            <VerticalMenuCmpt
-              setMenuIndex={setMenuIndex}
-              menuIndex={menuIndex}
-              menu={currentBattle.actionMenuStack[0]}
-            />
-          ) : (
-            <div />
-          )}
         </div>
       </div>
     );
