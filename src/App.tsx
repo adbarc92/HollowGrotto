@@ -15,9 +15,7 @@ import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import createGlobalStyle from 'styled-components';
 
-const GlobalStyle = createGlobalStyle`body {--rowNum: 4;--gridHeight: 400px;}`;
-
-// const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
 // body{
 // 	width: 100%;
 // }
