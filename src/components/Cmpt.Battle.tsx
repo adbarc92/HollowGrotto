@@ -6,6 +6,8 @@ import UnitCmpt from 'components/Cmpt.Unit';
 import BattleBg from 'components/Cmpt.BattleBg';
 import TurnOrderListCmpt from 'components/Cmpt.TurnOrderList';
 import VerticalMenuCmpt from 'components/Cmpt.VerticalMenu';
+import BattleInfoCmpt from 'components/Cmpt.BattleInfo';
+import BattleInfoGridCmpt from 'components/Cmpt.BattleInfoGrid';
 // Model Imports
 import {
   Battle,
@@ -17,6 +19,7 @@ import {
 import { roundApplyAction, doBattle } from 'controller/combat';
 // Misc
 import { makeStyles } from '@material-ui/core';
+import { Allegiance } from 'model/Model.Unit';
 
 // Represents which menu is currently displayed
 export enum PlayerInputState {
@@ -188,6 +191,9 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
           ) : null}
         </div>
       </div>
+
+      {/* <BattleInfoCmpt team={allies} allegiance={Allegiance.ALLEGIANCE_ALLY} /> */}
+      <BattleInfoGridCmpt team={allies} />
     </div>
   );
 };
