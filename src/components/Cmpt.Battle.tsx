@@ -7,7 +7,6 @@ import BattleBg from 'components/Cmpt.BattleBg';
 import TurnOrderListCmpt from 'components/Cmpt.TurnOrderList';
 import VerticalMenuCmpt from 'components/Cmpt.VerticalMenu';
 import BattleInfoCmpt from 'components/Cmpt.BattleInfo';
-import BattleInfoGridCmpt from 'components/Cmpt.BattleInfoGrid';
 // Model Imports
 import {
   Battle,
@@ -191,9 +190,7 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
           ) : null}
         </div>
       </div>
-
-      {/* <BattleInfoCmpt team={allies} allegiance={Allegiance.ALLEGIANCE_ALLY} /> */}
-      <BattleInfoGridCmpt team={allies} />
+      <BattleInfoCmpt team={allies} allegiance={Allegiance.ALLEGIANCE_ALLY} />
     </div>
   );
 };

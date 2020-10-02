@@ -13,13 +13,6 @@ import { loadImagesAndSprites } from 'utils/Sprites';
 // Material-UI Imports
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
-import createGlobalStyle from 'styled-components';
-
-const GlobalStyle = createGlobalStyle`
-// body{
-// 	width: 100%;
-// }
-// `;
 
 const useStyles = makeStyles(() => {
   return {
@@ -80,7 +73,6 @@ const App = (): JSX.Element => {
     // Should return a battle component with currentBattle, which includes a battle display, turn order display, and vertical menu component
     return (
       <div>
-        <GlobalStyle />
         <div className={classes.topContainer}>
           <div className={classes.canvasContainer}>
             {currentBattle ? <BattleCmpt battle={currentBattle} /> : <div />}
