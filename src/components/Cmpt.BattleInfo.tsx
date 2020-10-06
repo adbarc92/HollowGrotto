@@ -27,59 +27,67 @@ const useStyles = makeStyles(() => {
       borderColor: 'white',
       WebkitTextStroke: '0.5px black',
       color: 'white',
+      align: 'center',
       padding: '10px',
       fontSize: '12px',
       top: `${getScreenSize() - 95}px`,
       left: `${0 + getScreenSize() / 2}px`,
     },
-    rowContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-    },
+    // rowContainer: {
+    //   display: 'flex',
+    //   flexDirection: 'row',
+    // },
     rowItem: {
-      paddingRight: '10px',
-      paddingLeft: '10px',
+      paddingRight: '5px',
+      paddingLeft: '5px',
+      align: 'center',
     },
   };
 });
-
-const InfoRowCmpt = (props): JSX.Element => {
-  const classes = useStyles();
-  const { unit, key } = props;
-  const { bS, cS } = unit;
-  return (
-    <div className={classes.rowContainer} key={key}>
-      <div className={classes.rowItem}>{unit.name}</div>
-      <div className={classes.rowItem}>
-        {cS.hp}/{bS.hp}
-      </div>
-      <div className={classes.rowItem}>{cS.iCnt}</div>
-      <div className={classes.rowItem}>{cS.cCnt}</div>
-    </div>
-  );
-};
 
 const BattleInfoCmpt = (props: BattleInfoProps): JSX.Element => {
   const classes = useStyles();
   const headers = ['Unit', 'HP', 'Charge', 'Break/Heal'];
   const { team, allegiance } = props;
-  return (
-    <div className={classes.infoContainer} style={{ zIndex: 10 }}>
-      <div>
-        {headers.map((header, i) => {
+  return allegiance === Allegiance.ALLEGIANCE_ALLY ? (
+    // <table style={{ zIndex: 10 }}>
+    <table className={classes.infoContainer} style={{ zIndex: 10 }}>
+      <thead>
+        <tr>
+          {headers.map((header, i) => {
+            return (
+              <th className={classes.rowItem} key={i}>
+                {/* <th className={classes.rowItem} key={i}> */}
+                {header}
+              </th>
+            );
+          })}
+        </tr>
+      </thead>
+      <tbody>
+        {team.map((unit, i) => {
+          const { name, cS, bS } = unit;
           return (
-            <span className={classes.rowItem} key={i}>
-              {header}
-            </span>
+            <tr key={i}>
+              {/* <tr key={i}> */}
+              <td className={classes.rowItem}>{name}</td>
+              <td className={classes.rowItem}>{`${cS.hp} / ${bS.hp}`}</td>
+              <td className={classes.rowItem}>{cS.cCnt}</td>
+              <td className={classes.rowItem}>{cS.iCnt}</td>
+            </tr>
           );
         })}
-      </div>
-      <div>
+      </tbody>
+    </table>
+  ) : (
+    <table>
+      <thead>Enemies</thead>
+      <tbody>
         {team.map((unit, i) => {
-          return <InfoRowCmpt unit={unit} key={i} />;
+          return <tr key={i}>{unit.name}</tr>;
         })}
-      </div>
-    </div>
+      </tbody>
+    </table>
   );
 };
 

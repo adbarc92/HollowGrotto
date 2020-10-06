@@ -3,7 +3,7 @@ import React from 'react';
 import { Unit, Allegiance } from 'model/Model.Unit';
 import { Battle, battleGetCurrentRound } from 'model/Model.Battle';
 
-import { isAlly } from 'utils/Utils';
+import { isAlly, unitIsDead } from 'utils/Utils';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -69,7 +69,7 @@ const TurnListCmpt = (props: TurnListProps): JSX.Element => {
   return (
     <div className={classes.list}>
       {turnOrder.map((unit, i) => {
-        return (
+        return unitIsDead(unit) ? (
           <TurnListItem
             allegiance={
               isAlly(battle, unit)
@@ -79,7 +79,7 @@ const TurnListCmpt = (props: TurnListProps): JSX.Element => {
             key={i}
             unit={unit}
           />
-        );
+        ) : null;
       })}
     </div>
   );

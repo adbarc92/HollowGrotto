@@ -19,6 +19,10 @@ export const areAllUnitsDead = (units: Unit[]): boolean => {
   }, true);
 };
 
+export const unitIsDead = (unit: Unit): boolean => {
+  return unit.cS.hp > 0;
+};
+
 export const waitMs = async (ms: number): Promise<any> => {
   return new Promise(resolve => {
     setTimeout(resolve, ms);
