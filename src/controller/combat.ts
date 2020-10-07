@@ -32,7 +32,7 @@ import {
 // Controller Imports
 import { doAI } from 'controller/ai';
 // Utils Imports
-import { areAllUnitsDead, isAlly, waitMs } from 'utils/Utils';
+import { areAllUnitsDead, isAlly, waitMs, actionToString } from 'utils/Utils';
 
 export const doBattle = async (battle: Battle): Promise<null> => {
   return new Promise(async resolve => {
@@ -174,7 +174,7 @@ export const roundApplyAction = async (
 
   // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_ATTACKING);
 
-  // battle.text = actionToString(action);
+  battle.text = actionToString(action);
   await waitMs(1000);
   unitModifySpeed(actingUnit, action);
   switch (action) {
@@ -231,7 +231,7 @@ export const roundApplyAction = async (
   // Rerender here
   // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_DEFAULT);
 
-  // battle.text = '';
+  battle.text = '';
 
   await waitMs(500);
   getBattlePostActionCb()(); // resolve is called here

@@ -7,6 +7,7 @@ import BattleBg from 'components/Cmpt.BattleBg';
 import TurnOrderListCmpt from 'components/Cmpt.TurnOrderList';
 import VerticalMenuCmpt from 'components/Cmpt.VerticalMenu';
 import BattleInfoCmpt from 'components/Cmpt.BattleInfo';
+import BattleTextCmpt from 'components/Cmpt.BattleText';
 // Model Imports
 import {
   Battle,
@@ -19,6 +20,7 @@ import { roundApplyAction, doBattle } from 'controller/combat';
 // Misc
 import { makeStyles } from '@material-ui/core';
 import { Allegiance } from 'model/Model.Unit';
+import { unitIsDead } from 'utils/Utils';
 
 // Represents which menu is currently displayed
 export enum PlayerInputState {
@@ -90,6 +92,7 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
 
   return (
     <div className={classes.battleContainer}>
+      <BattleTextCmpt text={battle.text} />
       <div>
         <Stage width={512} height={512}>
           <Layer imageSmoothingEnabled={false}>
@@ -98,12 +101,16 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
           <Layer imageSmoothingEnabled={false}>
             <Group>
               {allies.map((unit, i) => {
-                return <UnitCmpt key={i} unit={unit} />;
+                return unitIsDead(unit) ? (
+                  <UnitCmpt key={i} unit={unit} />
+                ) : null;
               })}
             </Group>
             <Group>
               {enemies.map((unit, i) => {
-                return <UnitCmpt key={i} unit={unit} />;
+                return unitIsDead(unit) ? (
+                  <UnitCmpt key={i} unit={unit} />
+                ) : null;
               })}
             </Group>
           </Layer>

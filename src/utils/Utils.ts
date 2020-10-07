@@ -1,4 +1,4 @@
-import { Battle } from 'model/Model.Battle';
+import { Battle, G_BATTLE_MENU_LABELS } from 'model/Model.Battle';
 import { Unit } from 'model/Model.Unit';
 
 export const alternate = (nFrames: number, ms: number): number => {
@@ -31,4 +31,8 @@ export const waitMs = async (ms: number): Promise<any> => {
 
 export const getRandNum = (max: number): number => {
   return Math.floor(Math.random() * Math.floor(max));
+};
+
+export const actionToString = (i: number): string => {
+  return G_BATTLE_MENU_LABELS[i];
 };

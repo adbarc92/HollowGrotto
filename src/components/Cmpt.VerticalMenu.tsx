@@ -24,7 +24,6 @@ const useStyles = makeStyles(() => {
       borderColor: 'white',
       WebkitTextStroke: '0.5px black',
       color: 'white',
-      // borderWidth: '10px',
       flexDirection: 'column',
       fontSize: '20px',
       padding: '10px',
