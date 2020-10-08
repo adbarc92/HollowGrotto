@@ -135,24 +135,17 @@ const controller_battleSimulateTurn = async (
   unitMoveForward(team, actingUnit);
   return new Promise(resolve => {
     setBattlePostActionCb(resolve);
-    // const actionMenu = battle.actionMenuStack[0];
     if (isAlly(battle, actingUnit)) {
-      if (actingUnit.cS.iCnt <= 0) {
-        //   actionMenu.disabledItems.push(2, 4);
-        // } else {
-        //   actionMenu.disabledItems = actionMenu.disabledItems.filter(
-        //     i => i !== 2 && i !== 4
-        //   );
-      }
-      // actionMenu.i = -1;
-      // G_model_menuSetNextCursorIndex(actionMenu, 1, true);
-      // G_model_setBattleInputEnabled(true);
-      (window as any).BattleInterface.setPlayerReady();
+      // if (actingUnit.cS.iCnt <= 0) {
+      // }
+      (window as any).BattleInterface.setPlayerReady(); // Triggers rerender
     } else {
       setTimeout(() => {
+        (window as any).BattleInterface.setEnemyActing();
         console.log('Enemy action!');
         doAI(battle, round, actingUnit);
       }, 1000);
+      (window as any).BattleInterface.setPlayerDisabled(); // Triggers rerender
     }
   });
 };

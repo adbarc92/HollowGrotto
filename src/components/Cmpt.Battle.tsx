@@ -20,7 +20,7 @@ import { roundApplyAction, doBattle } from 'controller/combat';
 // Misc
 import { makeStyles } from '@material-ui/core';
 import { Allegiance } from 'model/Model.Unit';
-import { unitIsDead } from 'utils/Utils';
+import { unitIsDead, waitMs } from 'utils/Utils';
 
 // Represents which menu is currently displayed
 export enum PlayerInputState {
@@ -28,6 +28,7 @@ export enum PlayerInputState {
   SelectingTarget,
   SelectingItem,
   InputDisabled,
+  EnemyActing,
 }
 
 interface BattleProps {
@@ -63,6 +64,7 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
   const [selectedAction, setSelectedAction] = React.useState<RoundAction>(
     RoundAction.ACTION_STRIKE
   );
+  const [shouldRefresh, setShouldRefresh] = React.useState(false);
   // const [target, setTarget] = React.useState<Unit | null>(null);
   // const [menuIndex, setMenuIndex] = React.useState<null | number>(null);
   const { battle } = props;
@@ -76,15 +78,26 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
     setPlayerInputState(PlayerInputState.InputDisabled);
   };
 
+  const setEnemyActing = () => {
+    setPlayerInputState(PlayerInputState.EnemyActing);
+  };
+
   const BattleInterface = {
     setPlayerReady,
     setPlayerDisabled,
+    setEnemyActing,
   };
 
   useEffect(() => {
     if (!battleOngoing) {
       doBattle(battle);
       setBattleOngoing(true);
+    }
+    // Render Loop
+    if (!shouldRefresh) {
+      setTimeout(() => setShouldRefresh(true), 500);
+    } else {
+      setShouldRefresh(false);
     }
   }, [battle, battleOngoing]);
 
