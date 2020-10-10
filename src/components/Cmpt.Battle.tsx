@@ -46,6 +46,7 @@ const useStyles = makeStyles(() => {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'center',
+      position: 'relative',
     },
     infoContainer: {
       display: 'flex',
@@ -105,8 +106,8 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
 
   return (
     <div className={classes.battleContainer}>
-      <BattleTextCmpt text={battle.text} />
       <div>
+        <BattleTextCmpt text={battle.text} />
         <Stage width={512} height={512}>
           <Layer imageSmoothingEnabled={false}>
             <BattleBg width={512} height={512} />
@@ -203,9 +204,9 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
                 setPlayerInputState(PlayerInputState.InputDisabled);
                 roundApplyAction(selectedAction, round, target);
               }}
-              cancelCb={() =>
-                setPlayerInputState(PlayerInputState.SelectingAction)
-              }
+              cancelCb={() => {
+                setPlayerInputState(PlayerInputState.SelectingAction);
+              }}
             />
           ) : null}
         </div>

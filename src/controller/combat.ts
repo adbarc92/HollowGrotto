@@ -33,6 +33,7 @@ import {
 import { doAI } from 'controller/ai';
 // Utils Imports
 import { areAllUnitsDead, isAlly, waitMs, actionToString } from 'utils/Utils';
+import { playSound } from 'utils/sound';
 
 export const doBattle = async (battle: Battle): Promise<null> => {
   return new Promise(async resolve => {
@@ -174,7 +175,7 @@ export const roundApplyAction = async (
     case RoundAction.ACTION_STRIKE:
       const dmg = G_controller_battleActionStrike(actingUnit, target as Unit);
       battle.text = 'Did ' + -dmg + ' damage.';
-      // G_view_playSound('actionStrike');
+      playSound('actionStrike');
 
       // G_model_actorSetAnimState((target as Unit).actor, G_ANIM_STUNNED);
       // await G_utils_waitMs(800);
@@ -189,11 +190,11 @@ export const roundApplyAction = async (
       break;
     case RoundAction.ACTION_CHARGE:
       G_controller_battleActionCharge(actingUnit);
-      // G_view_playSound('actionCharge');
+      playSound('actionCharge');
       break;
     case RoundAction.ACTION_DEFEND:
       G_controller_battleActionDefend(actingUnit);
-      // G_view_playSound('actionDefend');
+      playSound('actionDefend');
       break;
     case RoundAction.ACTION_HEAL:
       G_controller_battleActionHeal(actingUnit);

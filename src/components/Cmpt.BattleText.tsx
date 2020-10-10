@@ -3,7 +3,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import theme from 'theme';
 import {
-  BORDER_RADIUS,
   BACKGROUND_COLOR,
   BORDER_STYLE,
   BORDER_COLOR,
@@ -11,9 +10,7 @@ import {
   COLOR,
   TEXT_STROKE,
   TEXT_ALIGN,
-  FONT_SIZE,
 } from 'theme';
-import { Battle } from 'model/Model.Battle';
 import { getScreenSize } from './ReactCanvas';
 
 interface BattleTextProps {
@@ -23,8 +20,7 @@ interface BattleTextProps {
 const useStyles = makeStyles(theme => {
   return {
     outerContainer: {
-      // backgroundColor: theme.menu.backgroundColor, // NOTE: QUESTION
-      borderRadius: BORDER_RADIUS,
+      borderRadius: '40px',
       backgroundColor: BACKGROUND_COLOR,
       borderStyle: BORDER_STYLE,
       borderColor: BORDER_COLOR,
@@ -36,11 +32,12 @@ const useStyles = makeStyles(theme => {
       position: 'absolute',
       width: `${getScreenSize()}px`,
       height: `${getScreenSize() / 7}px`,
-      // left: `${window.innerWidth / 2 - getScreenSize() / 2}px`,
-      left: '25%',
+      top: '0',
+      left: '0',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      boxSizing: 'border-box',
     },
     innerContainer: {
       top: '50%',

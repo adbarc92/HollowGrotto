@@ -28,8 +28,8 @@ const useStyles = makeStyles(() => {
       fontSize: '12px', // common to theme
       borderSpacing: '2px', // common to theme
       position: 'absolute', // unique
-      top: `${getScreenSize() - 95}px`, // unique
-      left: `${getScreenSize() / 2}px`, // unique
+      bottom: '0px', // unique
+      left: '0px', // unique
     },
     tableContainer: {
       tableLayout: 'fixed',

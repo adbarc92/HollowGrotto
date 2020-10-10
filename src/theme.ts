@@ -1,3 +1,5 @@
+// Theme is not per component, it exists on the top level of App
+
 export const BORDER_RADIUS = '15px';
 export const BACKGROUND_COLOR = '#C2C3C7';
 export const BORDER_STYLE = 'solid';

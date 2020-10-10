@@ -10,6 +10,7 @@ import { ENCOUNTER_0, EncounterDef } from 'model/Model.Database'; // temporary
 // Controller Imports
 // Utils Imports
 import { loadImagesAndSprites } from 'utils/Sprites';
+import { loadSounds } from 'utils/sound';
 // Material-UI Imports
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
@@ -54,6 +55,7 @@ const App = (): JSX.Element => {
     const load = async () => {
       await loadImagesAndSprites();
       setLoading(false);
+      loadSounds();
       const battleTemp = createBattle(party, enemies);
       setCurrentBattle(battleTemp);
     };

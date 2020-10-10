@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core';
+import { playSound } from 'utils/sound';
 
 // Should manage its own state--state is not passed in
 interface VerticalMenuProps {
@@ -67,9 +68,13 @@ const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
           <span
             className={menuIndex === i ? classes.menuItemLit : classes.menuItem}
             key={i}
-            onMouseEnter={() => setMenuIndex(i)}
+            onMouseEnter={() => {
+              setMenuIndex(i);
+              playSound('menuMove');
+            }}
             onMouseLeave={() => setMenuIndex(null)}
             onClick={() => {
+              playSound('menuConfirm');
               cb(i);
             }} //
           >
