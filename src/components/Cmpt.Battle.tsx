@@ -65,7 +65,7 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
   const [selectedAction, setSelectedAction] = React.useState<RoundAction>(
     RoundAction.ACTION_STRIKE
   );
-  const [shouldRefresh, setShouldRefresh] = React.useState(false);
+  const [refreshApp, SetRefreshApp] = React.useState(false);
   // const [target, setTarget] = React.useState<Unit | null>(null);
   // const [menuIndex, setMenuIndex] = React.useState<null | number>(null);
   const { battle } = props;
@@ -94,13 +94,11 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
       doBattle(battle);
       setBattleOngoing(true);
     }
-    // Render Loop
-    if (!shouldRefresh) {
-      setTimeout(() => setShouldRefresh(true), 500);
-    } else {
-      setShouldRefresh(false);
-    }
-  }, [battle, battleOngoing]);
+    setTimeout(() => {
+      console.log('refreshing app:', refreshApp);
+      SetRefreshApp(!refreshApp);
+    });
+  }, [battle, battleOngoing, refreshApp]);
 
   (window as any).BattleInterface = BattleInterface;
 
