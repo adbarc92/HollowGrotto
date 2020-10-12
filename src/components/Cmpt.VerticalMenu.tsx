@@ -51,6 +51,7 @@ const VerticalMenuCmpt = (props: VerticalMenuProps): JSX.Element => {
   useEffect(() => {
     const onKeyDown = (ev: KeyboardEvent) => {
       if (ev.which === 27) {
+        playSound('menuCancel');
         props.cancelCb();
       }
     };

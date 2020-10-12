@@ -94,6 +94,7 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
       doBattle(battle);
       setBattleOngoing(true);
     }
+    // Render Loop
     setTimeout(() => {
       console.log('refreshing app:', refreshApp);
       SetRefreshApp(!refreshApp);
@@ -138,7 +139,6 @@ const BattleCmpt = (props: BattleProps): JSX.Element => {
               items={G_BATTLE_MENU_LABELS}
               cb={i => {
                 const round = battleGetCurrentRound(battle);
-
                 setSelectedAction(i);
 
                 switch (i) {

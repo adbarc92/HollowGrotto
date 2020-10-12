@@ -40,13 +40,17 @@ export const createActor = (spriteIndex: number): Actor => {
   };
 };
 
+export const actorHasMultiSprite = (actor: Actor): boolean => {
+  return actor.spriteIndex < 3;
+};
+
 export const actorGetCurrentSpriteAndOffset = (
   actor: Actor,
   isPaused?: boolean
 ): [string, number, number] => {
   const { facing, sprite, spriteIndex, anim } = actor;
   let spriteIndexOffset = anim;
-  const hasMultiSprite = spriteIndex < 3;
+  const hasMultiSprite = actorHasMultiSprite(actor);
   let yOff = 0;
   if (!isPaused) {
     if (anim === AnimState.ANIM_WALKING) {
@@ -96,4 +100,8 @@ export const actorSetPosition = (actor: Actor, x: number, y: number): void => {
 
 export const actorGetPosition = (actor: Actor): [number, number] => {
   return [actor.x, actor.y];
+};
+
+export const actorSetAnimState = (actor: Actor, anim: AnimState) => {
+  actor.anim = anim;
 };

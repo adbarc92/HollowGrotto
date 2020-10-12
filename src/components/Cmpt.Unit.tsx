@@ -1,7 +1,10 @@
 import React from 'react';
 import { Sprite } from 'react-konva';
 import { Unit } from 'model/Model.Unit';
-import { actorGetCurrentSpriteAndOffset } from 'model/Model.Actor';
+import {
+  actorGetCurrentSpriteAndOffset,
+  actorHasMultiSprite,
+} from 'model/Model.Actor';
 import { getSprite } from 'utils/Sprites';
 
 interface UnitProps {
@@ -16,9 +19,49 @@ const UnitCmpt = (props: UnitProps): JSX.Element => {
   const [spriteName, offsetX, offsetY] = actorGetCurrentSpriteAndOffset(actor);
   const sprite = getSprite(spriteName);
   const [img, spriteX, spriteY, w, h] = sprite;
-  const animations = {
-    default: [spriteX, spriteY, w, h],
-  };
+  const animations = actorHasMultiSprite(actor)
+    ? {
+        default: [spriteX, spriteY, w, h],
+        jumping: [
+          spriteX,
+          spriteY,
+          w,
+          h,
+          spriteX + 32,
+          spriteY,
+          w,
+          h,
+          spriteX + 32,
+          spriteY,
+          w,
+          h,
+          spriteX,
+          spriteY,
+          w,
+          h,
+        ],
+        walking: [
+          spriteX,
+          spriteY,
+          w,
+          h,
+          spriteX + 16,
+          spriteY,
+          w,
+          h,
+          spriteX + 16,
+          spriteY,
+          w,
+          h,
+          spriteX,
+          spriteY,
+          w,
+          h,
+        ],
+      }
+    : {
+        default: [spriteX, spriteY, w, h],
+      };
   const scale = {
     x: (window as any).AppInterface.scale,
     y: (window as any).AppInterface.scale,

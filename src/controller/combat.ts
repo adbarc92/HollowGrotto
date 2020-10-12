@@ -28,6 +28,12 @@ import {
   unitGainBreakCharge,
   unitGetTeam,
 } from 'model/Model.Unit';
+import {
+  actorSetAnimState,
+  AnimState,
+  Facing,
+  actorSetFacing,
+} from 'model/Model.Actor';
 
 // Controller Imports
 import { doAI } from 'controller/ai';
@@ -101,6 +107,7 @@ export const battleSimulateBattle = async (battle: Battle): Promise<void> => {
 };
 
 const battleSimulateNextRound = async (battle: Battle) => {
+  console.log('Simulating Round...');
   const round = battleGetCurrentRound(battle);
   roundInit(round);
 
@@ -120,6 +127,7 @@ const controller_battleSimulateTurn = async (
   battle: Battle,
   round: Round
 ): Promise<void> => {
+  console.log('Simulating Turn...');
   const actingUnit = roundGetActingUnit(round) as Unit;
   if (!unitLives(actingUnit) || battleIsComplete(battle)) {
     return;
@@ -128,6 +136,7 @@ const controller_battleSimulateTurn = async (
   if (actingUnit.cS.def !== actingUnit.bS.def) {
     unitResetDef(actingUnit);
   }
+  // If zero, Unit has been Interrupted and gets no turn
   if (actingUnit.cS.spd === 0) {
     actingUnit.cS.spd = actingUnit.bS.spd;
     return;
@@ -139,7 +148,7 @@ const controller_battleSimulateTurn = async (
     if (isAlly(battle, actingUnit)) {
       // if (actingUnit.cS.iCnt <= 0) {
       // }
-      (window as any).BattleInterface.setPlayerReady(); // Triggers rerender
+      (window as any).BattleInterface.setPlayerReady(); // Triggers rerender, updates to show the move forward
     } else {
       setTimeout(() => {
         (window as any).BattleInterface.setEnemyActing();
@@ -166,7 +175,7 @@ export const roundApplyAction = async (
 
   // Change animations here
 
-  // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_ATTACKING);
+  actorSetAnimState(actingUnit.actor, AnimState.ANIM_ATTACKING);
 
   battle.text = actionToString(action);
   await waitMs(1000);
@@ -174,19 +183,19 @@ export const roundApplyAction = async (
   switch (action) {
     case RoundAction.ACTION_STRIKE:
       const dmg = G_controller_battleActionStrike(actingUnit, target as Unit);
-      battle.text = 'Did ' + -dmg + ' damage.';
+      battle.text = 'Did ' + -dmg + ' damage.'; // NOTE: Not rendered
       playSound('actionStrike');
 
-      // G_model_actorSetAnimState((target as Unit).actor, G_ANIM_STUNNED);
-      // await G_utils_waitMs(800);
-      // G_model_actorSetAnimState((target as Unit).actor, G_ANIM_DEFAULT);
+      actorSetAnimState((target as Unit).actor, AnimState.ANIM_STUNNED);
+      await waitMs(800);
+      actorSetAnimState((target as Unit).actor, AnimState.ANIM_DEFAULT);
 
-      // if (!unitLives(target as Unit)) {
-      //   const facing = isAlly(battle, target as Unit)
-      //     ? G_FACING_UP_RIGHT
-      //     : G_FACING_UP_LEFT;
-      //   G_model_actorSetFacing((target as Unit).actor, facing);
-      // }
+      if (!unitLives(target as Unit)) {
+        const facing = isAlly(battle, target as Unit)
+          ? Facing.FACING_UP_RIGHT
+          : Facing.FACING_UP_LEFT;
+        actorSetFacing((target as Unit).actor, facing);
+      }
       break;
     case RoundAction.ACTION_CHARGE:
       G_controller_battleActionCharge(actingUnit);
@@ -223,7 +232,7 @@ export const roundApplyAction = async (
   console.log('Reset');
   unitResetPosition(actingUnit, team);
   // Rerender here
-  // G_model_actorSetAnimState(actingUnit.actor, G_ANIM_DEFAULT);
+  actorSetAnimState(actingUnit.actor, AnimState.ANIM_DEFAULT);
 
   battle.text = '';
 
