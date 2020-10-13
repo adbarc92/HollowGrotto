@@ -42,3 +42,7 @@ export const partyAddCharacter = (party: Party, character: Character): void => {
   (character.unit as Unit).ai = AI.PLAYER;
   party.characters.push(character);
 };
+
+export const partyGetProtag = (party: Party): Character => {
+  return party.characters[0];
+};

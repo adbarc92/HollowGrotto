@@ -6,7 +6,7 @@ import {
   RoundAction,
   Battle,
 } from 'model/Model.Battle';
-import { getScreenSize } from 'components/ReactCanvas';
+import { getScreenSize } from 'App';
 import { getSpriteSize } from 'utils/Sprites';
 import { isAlly } from 'utils/Utils';
 

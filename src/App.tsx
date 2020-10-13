@@ -3,10 +3,13 @@ import React, { useEffect } from 'react';
 // Custom Component Imports
 import BattleCmpt from 'components/Cmpt.Battle';
 import StartScreenCmpt from 'components/Cmpt.StartScreen';
+import RoomCmpt from 'components/Cmpt.Room';
 // Model Imports
 import { Party, createTestParty } from 'model/Model.Party';
 import { Battle, createBattle } from 'model/Model.Battle';
+// import { Room } from 'model/Model.Room';
 import { ENCOUNTER_0, EncounterDef } from 'model/Model.Database'; // temporary
+import { World, createWorld, worldGetCurrentRoom } from 'model/Model.World';
 // Controller Imports
 // Utils Imports
 import { loadImagesAndSprites } from 'utils/Sprites';
@@ -32,6 +35,13 @@ const useStyles = makeStyles(() => {
   };
 });
 
+export const CANVAS_HEIGHT = 512;
+export const CANVAS_WIDTH = 512;
+
+export const getScreenSize = (): number => {
+  return CANVAS_HEIGHT;
+};
+
 const App = (): JSX.Element => {
   const [scale, setScale] = React.useState<number>(2);
   const classes = useStyles();
@@ -39,6 +49,8 @@ const App = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
   const [currentBattle, setCurrentBattle] = React.useState<null | Battle>(null);
   const [gameStarted, setGameStarted] = React.useState(false);
+  const [world, setWorld] = React.useState<World | null>(null);
+  // const [room, setRoom] = React.useState<Room | null>(null);
 
   const AppInterface = {
     setLoading,
@@ -46,7 +58,10 @@ const App = (): JSX.Element => {
     setCurrentBattle,
     currentBattle,
     scale,
+    world,
+    // room,
   };
+
   // Create Teams
   const party: Party = createTestParty();
   const enemies: EncounterDef = ENCOUNTER_0;
@@ -56,8 +71,9 @@ const App = (): JSX.Element => {
       await loadImagesAndSprites();
       setLoading(false);
       loadSounds();
-      const battleTemp = createBattle(party, enemies);
-      setCurrentBattle(battleTemp);
+      setWorld(createWorld());
+      // const battleTemp = createBattle(party, enemies);
+      // setCurrentBattle(battleTemp);
     };
     if (!isLoaded) {
       load();
@@ -77,7 +93,11 @@ const App = (): JSX.Element => {
       <div>
         <div className={classes.topContainer}>
           <div className={classes.canvasContainer}>
-            {currentBattle ? <BattleCmpt battle={currentBattle} /> : <div />}
+            {currentBattle ? (
+              <BattleCmpt battle={currentBattle} />
+            ) : (
+              <RoomCmpt room={worldGetCurrentRoom(world as World)} />
+            )}
           </div>
         </div>
       </div>

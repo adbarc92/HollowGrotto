@@ -36,3 +36,7 @@ export const getRandNum = (max: number): number => {
 export const actionToString = (i: number): string => {
   return G_BATTLE_MENU_LABELS[i];
 };
+
+export const to1d = (x: number, y: number, width: number): number => {
+  return y * width + x;
+};

@@ -12,7 +12,7 @@ type Sprite = [
   number
 ];
 
-const createCanvas = (
+export const createCanvas = (
   width: number,
   height: number
 ): [HTMLCanvasElement, CanvasRenderingContext2D, number, number] => {
@@ -27,7 +27,7 @@ const createCanvas = (
   ];
 };
 
-const drawSprite = (
+export const drawSprite = (
   sprite: string | Sprite,
   x: number,
   y: number,

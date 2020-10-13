@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Allegiance, Unit } from 'model/Model.Unit';
-import { getScreenSize } from './ReactCanvas';
+// import { getScreenSize } from 'App';
 
 import { makeStyles } from '@material-ui/core';
 

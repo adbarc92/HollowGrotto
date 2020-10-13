@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core';
 
 import { KonvaSprite, TinyRect } from 'deprecated/KonvaSprite';
 
+import { getScreenSize, CANVAS_WIDTH, CANVAS_HEIGHT } from 'App';
+
 const useStyles = makeStyles(() => {
   return {
     canvasContainer: {
@@ -16,13 +18,6 @@ const useStyles = makeStyles(() => {
     },
   };
 });
-
-const CANVAS_HEIGHT = 512;
-const CANVAS_WIDTH = 512;
-
-export const getScreenSize = () => {
-  return CANVAS_HEIGHT;
-};
 
 const animations = {
   // idle: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]

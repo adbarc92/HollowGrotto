@@ -20,7 +20,7 @@ import { roundApplyAction, doBattle } from 'controller/combat';
 // Misc
 import { makeStyles } from '@material-ui/core';
 import { Allegiance } from 'model/Model.Unit';
-import { unitIsDead, waitMs } from 'utils/Utils';
+import { unitIsDead } from 'utils/Utils';
 
 // Represents which menu is currently displayed
 export enum PlayerInputState {

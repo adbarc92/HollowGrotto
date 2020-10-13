@@ -11,7 +11,7 @@ import {
   TEXT_STROKE,
   TEXT_ALIGN,
 } from 'theme';
-import { getScreenSize } from './ReactCanvas';
+import { getScreenSize } from 'App';
 
 interface BattleTextProps {
   text: string | null;
