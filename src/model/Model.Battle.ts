@@ -210,6 +210,10 @@ const makeEnemies = (monsters: CharacterDef[]) => {
 //   }
 // };
 
+export const getCurrentBattle = (): Battle => {
+  return (window as any).AppInterface.currentBattle;
+};
+
 export const createBattle = (party: Party, encounter: EncounterDef): Battle => {
   // advantage = advantage || G_ADVANTAGE_NONE;
 

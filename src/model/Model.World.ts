@@ -10,10 +10,10 @@ export interface World {
   lastX: number;
   lastY: number;
   pause: boolean;
-  state: Object;
+  state: { [key: string]: boolean | string };
 }
 
-let model_world: World | null = null;
+// let model_world: World | null = null;
 
 const START_ROOM_X = 1;
 const START_ROOM_Y = 1;
@@ -62,27 +62,25 @@ export const createWorld = (): World => {
   return world;
 };
 
-const setCurrentWorld = (world: World) => {
-  model_world = world;
+export const setCurrentWorld = (world: World): void => {
+  // model_world = world;
+  (window as any).AppInterface.setWorld(world);
 };
 
-const getCurrentWorld = (): World => {
-  return model_world as World;
+export const getCurrentWorld = (): World => {
+  // return model_world as World;
+  return (window as any).AppInterface.world;
 };
 
 const worldSetCurrentRoom = (world: World, x: number, y: number) => {
   world.roomI = y * 4 + x;
 };
 
-export const worldGetCurrentRoom = (world: World): Room => {
-  return world.rooms[world.roomI];
-};
-
-const worldSetCurrentRoomToAdjacentRoom = (
+export const worldSetCurrentRoomToAdjacentRoom = (
   offsetX: number,
   offsetY: number,
   world: World
-) => {
+): void => {
   const worldY = Math.floor(world.roomI / 4);
   const worldX = world.roomI % 4;
   const nextWorldX = (worldX + offsetX + 4) % 4;
@@ -114,4 +112,33 @@ const worldSetCurrentRoomToAdjacentRoom = (
   actorSetPosition(actor, newX, newY);
   world.lastX = newX;
   world.lastY = newY;
+};
+
+export const worldGetCurrentRoom = (world: World): Room => {
+  return world.rooms[world.roomI];
+};
+
+export const worldResetProtagToStartingPosition = (world: World): void => {
+  const party = world.party;
+  const protag = partyGetProtag(party);
+
+  actorSetPosition(protag.actor, world.lastX, world.lastY);
+};
+
+export const worldSetState = (key: string, value: boolean): void => {
+  // value was originally any, so this might break
+  const world = getCurrentWorld();
+  world.state[key] = value;
+};
+export const worldGetState = (key: string): any => {
+  const world = getCurrentWorld();
+  return world.state[key];
+};
+export const worldOnce = (key: string): boolean => {
+  const s = worldGetState(key);
+  if (s === undefined) {
+    worldSetState(key, true);
+    return true;
+  }
+  return false;
 };

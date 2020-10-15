@@ -16,6 +16,11 @@ export enum AnimState {
   ANIM_STUNNED,
 }
 
+export enum PlatformAI {
+  NONE,
+  LEFT_RIGHT,
+}
+
 export interface Actor {
   sprite: string;
   spriteIndex: number;

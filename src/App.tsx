@@ -8,7 +8,7 @@ import RoomCmpt from 'components/Cmpt.Room';
 import { Party, createTestParty } from 'model/Model.Party';
 import { Battle, createBattle } from 'model/Model.Battle';
 // import { Room } from 'model/Model.Room';
-import { ENCOUNTER_0, EncounterDef } from 'model/Model.Database'; // temporary
+import { G_ENCOUNTER_1, EncounterDef } from 'model/Model.Database'; // temporary
 import { World, createWorld, worldGetCurrentRoom } from 'model/Model.World';
 // Controller Imports
 // Utils Imports
@@ -64,7 +64,7 @@ const App = (): JSX.Element => {
 
   // Create Teams
   const party: Party = createTestParty();
-  const enemies: EncounterDef = ENCOUNTER_0;
+  const enemies: EncounterDef = G_ENCOUNTER_1;
 
   useEffect(() => {
     const load = async () => {

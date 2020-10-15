@@ -92,3 +92,10 @@ export const createRoom = (
     bgSprite,
   };
 };
+
+export const roomRemoveCharacter = (room: Room, ch: Character): void => {
+  const ind = room.characters.indexOf(ch);
+  if (ind > -1) {
+    room.characters.splice(ind, 1);
+  }
+};

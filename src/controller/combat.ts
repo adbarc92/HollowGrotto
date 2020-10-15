@@ -1,5 +1,5 @@
 // Model Imports
-import { Battle } from 'model/Model.Battle';
+import { Battle, getCurrentBattle } from 'model/Model.Battle';
 import {
   CompletionState,
   battleIsComplete,
@@ -168,7 +168,7 @@ export const roundApplyAction = async (
 ): Promise<void> => {
   // G_model_setBattleInputEnabled(false);
   // (window as any).AppInterface.setInputEnabled(false);
-  const battle = (window as any).AppInterface.currentBattle;
+  const battle = getCurrentBattle();
   // const battle = G_model_getCurrentBattle();
   const actingUnit = roundGetActingUnit(round) as Unit;
   unitSetToCenter(actingUnit);

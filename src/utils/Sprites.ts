@@ -33,7 +33,7 @@ export const drawSprite = (
   y: number,
   ctx: CanvasRenderingContext2D,
   scale?: number
-) => {
+): void => {
   scale = scale || 1;
   const [image, sprX, sprY, sprW, sprH] =
     typeof sprite === 'string' ? getSprite(sprite) : sprite;
@@ -206,7 +206,7 @@ const loadImage = (imagePath: string): Promise<HTMLImageElement> => {
 
 // exported functions --------------------------------------------------------------------
 
-export const loadImagesAndSprites = async () => {
+export const loadImagesAndSprites = async (): Promise<undefined> => {
   if (sprites) return; // Short-circuits loading for useEffect
   const spriteMap = {};
 
